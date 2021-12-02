@@ -70,3 +70,10 @@ def gamePointCalc(win, lose, win2, lose2, goal):
             return '내 팀과 상대 팀의 게임 차가 없습니다.'
     except:
         return "오류입니다."
+
+basketballMap = [
+    ('농구 : 현재 승률 계산', winRate),
+    ('농구 : 목표 승률 계산', goalWinRate),
+    ('농구 : 게임 차 계산', gamePointCalc),
+]
+basketballList = [x[0] for x in basketballMap]

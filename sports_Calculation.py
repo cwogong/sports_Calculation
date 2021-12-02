@@ -1,8 +1,7 @@
 import sys
-from PyQt5.QtWidgets import (QWidget, QStackedWidget, QGroupBox, QListView, QApplication,
-                             QBoxLayout, QLayout)
+from PyQt5.QtWidgets import (QWidget, QStackedWidget, QGroupBox, QListView,
+                             QApplication, QBoxLayout, QLayout)
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
-from PyQt5.QtCore import QModelIndex, Qt, pyqtSlot
 from widget import SoccerWidget, BaseballWidget, BasketballWidget, AdviceWidget
 
 class Main(QWidget):
@@ -47,9 +46,8 @@ class Main(QWidget):
         # 시그널 슬롯 연결
         view.clicked.connect(self.slot_clicked_item)
 
-    @pyqtSlot(QModelIndex)
-    def slot_clicked_item(self, QModelIndex):
-        self.stk_w.setCurrentIndex(QModelIndex.row())
+    def slot_clicked_item(self, idx):
+        self.stk_w.setCurrentIndex(idx.row())
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

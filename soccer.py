@@ -102,3 +102,11 @@ def goalWinPoint(win, draw, lose, goalPoint):
             return "숫자를 입력해주세요."
         else:
             return "오류입니다."
+
+soccerMap = [
+    ('축구 : 현재 승률 계산', winRate),
+    ('축구 : 현재 승점 계산', winPoint),
+    ('축구 : 목표 승률 계산', goalWinRate),
+    ('축구 : 목표 승점 계산', goalWinPoint),
+]
+soccerList = [x[0] for x in soccerMap]

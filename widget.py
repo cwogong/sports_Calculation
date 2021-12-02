@@ -1,10 +1,12 @@
-from PyQt5.QtWidgets import (QPushButton, QGroupBox, QComboBox, QMessageBox,
-                             QHBoxLayout, QBoxLayout, QLabel, QTextEdit, QLineEdit, QSizePolicy,)
-from list import soccerMap, soccerList, baseballMap, baseballList, basketballMap, basketballList, helpMap, helpList
-import datetime as dt
+from PyQt5.QtWidgets import (QGroupBox, QComboBox, QMessageBox, QPushButton, QSizePolicy,
+                             QHBoxLayout, QBoxLayout, QLabel, QTextEdit, QLineEdit,)
+from help import helpMap, helpList
+from soccer import soccerMap, soccerList
+from baseball import baseballMap, baseballList
+from basketball import basketballMap, basketballList
+import datetime
 
 class Button(QPushButton):
-
     def __init__(self, text, callback):
         super().__init__()
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
@@ -12,7 +14,7 @@ class Button(QPushButton):
         self.setText(text)
         self.clicked.connect(callback)
 
-class StWidgetForm(QGroupBox):
+class Widget(QGroupBox):
     def __init__(self):
         QGroupBox.__init__(self)
         self.box = QBoxLayout(QBoxLayout.TopToBottom)
@@ -108,7 +110,7 @@ class StWidgetForm(QGroupBox):
         txt = helpMap[helpList.index(key)][1]
         QMessageBox.information(self, "도움말", txt)
 
-class SoccerWidget(StWidgetForm):
+class SoccerWidget(Widget):
     def __init__(self):
         super(SoccerWidget, self).__init__()
         self.setTitle("축구 (38경기)")
@@ -131,19 +133,15 @@ class SoccerWidget(StWidgetForm):
                 hbox.addWidget(QLabel("점, %"))
             self.box.addLayout(hbox)
 
-        currentPointButton = Button("축구 : 현재 승점 계산", self.buttonClicked)
-        currentRateButton = Button("축구 : 현재 승률 계산", self.buttonClicked)
-        goalPointButton = Button("축구 : 목표 승점 계산", self.buttonClicked)
-        goalRateButton = Button("축구 : 목표 승률 계산", self.buttonClicked)
-
         hbox = QHBoxLayout()
-        hbox.addWidget(currentPointButton)
-        hbox.addWidget(goalPointButton)
-        self.box.addLayout(hbox)
-
-        hbox = QHBoxLayout()
-        hbox.addWidget(currentRateButton)
-        hbox.addWidget(goalRateButton)
+        cnt = 0
+        for i in soccerList:
+            button = Button(i,self.buttonClicked)
+            hbox.addWidget(button)
+            cnt += 1
+            if cnt == 2:
+                self.box.addLayout(hbox)
+                hbox = QHBoxLayout()
         self.box.addLayout(hbox)
 
         self.display = QTextEdit()
@@ -157,7 +155,7 @@ class SoccerWidget(StWidgetForm):
         hbox.addWidget(self.helpButton)
         self.box.addLayout(hbox)
 
-class BaseballWidget(StWidgetForm):
+class BaseballWidget(Widget):
     def __init__(self):
         super(BaseballWidget, self).__init__()
         self.setTitle("야구 (144경기)")
@@ -191,16 +189,16 @@ class BaseballWidget(StWidgetForm):
                 hbox.addWidget(dic[i + 1]['name'])
             self.box.addLayout(hbox)
 
-        currentRateButton = Button("야구 : 현재 승률 계산", self.buttonClicked)
-        goalRateButton = Button("야구 : 목표 승률 계산", self.buttonClicked)
-        gamePointButton = Button("야구 : 게임 차 계산", self.buttonClicked)
-
         hbox = QHBoxLayout()
-        hbox.addWidget(currentRateButton)
-        hbox.addWidget(goalRateButton)
+        cnt = 0
+        for i in baseballList:
+            button = Button(i, self.buttonClicked)
+            hbox.addWidget(button)
+            cnt += 1
+            if cnt == 2:
+                self.box.addLayout(hbox)
+                hbox = QHBoxLayout()
         self.box.addLayout(hbox)
-
-        self.box.addWidget(gamePointButton)
 
         self.display = QTextEdit()
         self.display.setReadOnly(True)
@@ -213,7 +211,7 @@ class BaseballWidget(StWidgetForm):
         hbox.addWidget(self.helpButton)
         self.box.addLayout(hbox)
 
-class BasketballWidget(StWidgetForm):
+class BasketballWidget(Widget):
     def __init__(self):
         super(BasketballWidget, self).__init__()
         self.setTitle("농구 (82경기)")
@@ -245,16 +243,16 @@ class BasketballWidget(StWidgetForm):
                 hbox.addWidget(dic[i + 1]['name'])
             self.box.addLayout(hbox)
 
-        currentRateButton = Button("농구 : 현재 승률 계산", self.buttonClicked)
-        goalRateButton = Button("농구 : 목표 승률 계산", self.buttonClicked)
-        gamePointButton = Button("농구 : 게임 차 계산", self.buttonClicked)
-
         hbox = QHBoxLayout()
-        hbox.addWidget(currentRateButton)
-        hbox.addWidget(goalRateButton)
+        cnt = 0
+        for i in basketballList:
+            button = Button(i, self.buttonClicked)
+            hbox.addWidget(button)
+            cnt += 1
+            if cnt == 2:
+                self.box.addLayout(hbox)
+                hbox = QHBoxLayout()
         self.box.addLayout(hbox)
-
-        self.box.addWidget(gamePointButton)
 
         self.display = QTextEdit()
         self.display.setReadOnly(True)
@@ -267,9 +265,11 @@ class BasketballWidget(StWidgetForm):
         hbox.addWidget(self.helpButton)
         self.box.addLayout(hbox)
 
-class AdviceWidget(StWidgetForm):
+class AdviceWidget(QGroupBox):
     def __init__(self):
-        super(AdviceWidget, self).__init__()
+        QGroupBox.__init__(self)
+        self.box = QBoxLayout(QBoxLayout.TopToBottom)
+        self.setLayout(self.box)
         self.setTitle("에러, 건의사항")
 
         self.nameEdit = QLineEdit()
@@ -305,7 +305,7 @@ class AdviceWidget(StWidgetForm):
             except:
                 fH = open('errors.txt', "w")
         try:
-            date = dt.datetime.today()
+            date = datetime.datetime.today()
             year = str(date.year)
             month = str(date.month)
             day = str(date.day)
@@ -318,13 +318,12 @@ class AdviceWidget(StWidgetForm):
                 return
 
             fH.write('[' + year + "." + month + "." + day + ".(" + hour + ":" + minute + ')]  '
-                     + self.nameEdit.text() + '\n')
-            fH.write(self.content.toPlainText() + '\n\n')
+                     + self.nameEdit.text() + '\n' + self.content.toPlainText() + '\n\n')
             font = self.content.font()
             font.setPointSize(font.pointSize() + 4)
             self.content.setFont(font)
             self.content.setText("좋은 의견 감사합니다!")
-            self.nameEdit.clear()
+            self.nameEdit.setText('')
             self.content.setReadOnly(True)
             self.nameEdit.setReadOnly(True)
             self.submitButton.setEnabled(False)
@@ -333,4 +332,3 @@ class AdviceWidget(StWidgetForm):
         except:
             self.content.setText("다시 입력해 주세요.")
             return
-
