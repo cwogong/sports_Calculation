@@ -1,10 +1,12 @@
-from PyQt5.QtWidgets import (QGroupBox, QComboBox, QMessageBox, QPushButton, QSizePolicy,
-                             QHBoxLayout, QBoxLayout, QLabel, QTextEdit, QLineEdit,)
+from PyQt5.QtCore import QLine
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QComboBox, QMessageBox, QPushButton, QSizePolicy,
+                             QHBoxLayout, QVBoxLayout, QBoxLayout, QLabel, QTextEdit, QLineEdit,)
 from help import helpMap, helpList
 from soccer import soccerMap, soccerList
 from baseball import baseballMap, baseballList
 from basketball import basketballMap, basketballList
 import datetime
+import baseballRanking, soccerRanking, basketballRanking
 
 class Button(QPushButton):
     def __init__(self, text, callback):
@@ -28,71 +30,10 @@ class Widget(QGroupBox):
         self.loseEdit2 = QLineEdit()
         self.goalEdit = QLineEdit()
 
+        self.rankEdit = QLineEdit()
+
         self.clearButton = Button("초기화", self.clearButtonClicked)
         self.clearButton.setFixedSize(100, 30)
-
-    def buttonClicked(self):
-        button = self.sender()
-        key = button.text()
-
-        win = self.winEdit.text()
-        win2 = self.winEdit2.text()
-        draw = self.drawEdit.text()
-        draw2 = self.drawEdit2.text()
-        lose = self.loseEdit.text()
-        lose2 = self.loseEdit2.text()
-        goal = self.goalEdit.text()
-
-        if key in soccerList:
-            if win == '' or draw == '' or lose == '':
-                self.display.setText('승리, 무승부, 패배를 모두 입력해주세요.')
-                return
-            try:
-                if int(win) + int(draw) + int(lose) > 38:
-                    self.display.setText("축구의 최대 경기 수는 38경기 입니다.")
-                    return
-                if int(win) < 0 or int(draw) < 0 or int(lose) < 0:
-                    self.display.setText("0 이상의 수를 입력해주세요.")
-                    return
-            except:
-                self.display.setText("숫자를 입력해주세요.")
-                return
-
-            value = soccerMap[soccerList.index(key)][1](win, draw, lose, goal)
-            self.display.setText(str(value))
-
-        elif key in baseballList:
-            if win == '' or draw == '' or lose == '':
-                self.display.setText('내 팀의 승리, 무승부, 패배를 모두 입력해주세요.')
-                return
-            try:
-                if int(win) + int(draw) + int(lose) > 144:
-                    self.display.setText("야구의 최대 경기 수는 144경기입니다.")
-                    return
-                if int(win) < 0 or int(draw) < 0 or int(lose) < 0:
-                    self.display.setText("0 이상의 수를 입력해주세요.")
-                    return
-            except:
-                self.display.setText("숫자를 입력해주세요.")
-                return
-
-            value = baseballMap[baseballList.index(key)][1](win, draw, lose, win2, draw2, lose2, goal)
-            self.display.setText(str(value))
-
-        elif key in basketballList:
-            if win == '' or lose == '':
-                self.display.setText('내 팀의 승리, 패배를 모두 입력해주세요.')
-                return
-            try:
-                if int(win) + int(lose) > 144:
-                    self.display.setText("농구의 최대 경기 수는 82경기입니다.")
-                    return
-            except:
-                self.display.setText("숫자를 입력해주세요.")
-                return
-
-            value = basketballMap[basketballList.index(key)][1](win, lose, win2, lose2, goal)
-            self.display.setText(str(value))
 
     def clearButtonClicked(self):
         self.winEdit.setText("")
@@ -155,6 +96,32 @@ class SoccerWidget(Widget):
         hbox.addWidget(self.helpButton)
         self.box.addLayout(hbox)
 
+    def buttonClicked(self):
+        button = self.sender()
+        key = button.text()
+
+        win = self.winEdit.text()
+        draw = self.drawEdit.text()
+        lose = self.loseEdit.text()
+        goal = self.goalEdit.text()
+
+        if win == '' or draw == '' or lose == '':
+            self.display.setText('승리, 무승부, 패배를 모두 입력해주세요.')
+            return
+        try:
+            if int(win) + int(draw) + int(lose) > 38:
+                self.display.setText("축구의 최대 경기 수는 38경기 입니다.")
+                return
+            if int(win) < 0 or int(draw) < 0 or int(lose) < 0:
+                self.display.setText("0 이상의 수를 입력해주세요.")
+                return
+        except:
+            self.display.setText("숫자를 입력해주세요.")
+            return
+
+        value = soccerMap[soccerList.index(key)][1](win, draw, lose, goal)
+        self.display.setText(str(value))
+
 class BaseballWidget(Widget):
     def __init__(self):
         super(BaseballWidget, self).__init__()
@@ -211,10 +178,39 @@ class BaseballWidget(Widget):
         hbox.addWidget(self.helpButton)
         self.box.addLayout(hbox)
 
+    def buttonClicked(self):
+        button = self.sender()
+        key = button.text()
+
+        win = self.winEdit.text()
+        win2 = self.winEdit2.text()
+        draw = self.drawEdit.text()
+        draw2 = self.drawEdit2.text()
+        lose = self.loseEdit.text()
+        lose2 = self.loseEdit2.text()
+        goal = self.goalEdit.text()
+
+        if win == '' or draw == '' or lose == '':
+            self.display.setText('내 팀의 승리, 무승부, 패배를 모두 입력해주세요.')
+            return
+        try:
+            if int(win) + int(draw) + int(lose) > 144:
+                self.display.setText("야구의 최대 경기 수는 144경기입니다.")
+                return
+            if int(win) < 0 or int(draw) < 0 or int(lose) < 0:
+                self.display.setText("0 이상의 수를 입력해주세요.")
+                return
+        except:
+            self.display.setText("숫자를 입력해주세요.")
+            return
+
+        value = baseballMap[baseballList.index(key)][1](win, draw, lose, win2, draw2, lose2, goal)
+        self.display.setText(str(value))
+
 class BasketballWidget(Widget):
     def __init__(self):
         super(BasketballWidget, self).__init__()
-        self.setTitle("농구 (82경기)")
+        self.setTitle("농구 (54경기)")
 
         self.helpButton = Button("농구 : 도움말", self.helpButtonClicked)
         self.helpButton.setFixedSize(100, 30)
@@ -264,6 +260,33 @@ class BasketballWidget(Widget):
         hbox.addStretch()
         hbox.addWidget(self.helpButton)
         self.box.addLayout(hbox)
+        
+    def buttonClicked(self):
+        button = self.sender()
+        key = button.text()
+
+        win = self.winEdit.text()
+        win2 = self.winEdit2.text()
+        lose = self.loseEdit.text()
+        lose2 = self.loseEdit2.text()
+        goal = self.goalEdit.text()
+
+        if win == '' or lose == '':
+            self.display.setText('내 팀의 승리, 패배를 모두 입력해주세요.')
+            return
+        try:
+            if int(win) + int(lose) > 54:
+                self.display.setText("농구의 최대 경기 수는 54경기입니다.")
+                return
+            if int(win) < 0 or int(lose) < 0:
+                self.display.setText("0 이상의 수를 입력해주세요.")
+                return
+        except:
+            self.display.setText("숫자를 입력해주세요.")
+            return
+
+        value = basketballMap[basketballList.index(key)][1](win, lose, win2, lose2, goal)
+        self.display.setText(str(value))
 
 class AdviceWidget(QGroupBox):
     def __init__(self):
@@ -332,3 +355,58 @@ class AdviceWidget(QGroupBox):
         except:
             self.content.setText("다시 입력해 주세요.")
             return
+
+class SoccerRankingWidget(QGroupBox):
+    def __init__(self):
+        QGroupBox.__init__(self)
+        self.box = QBoxLayout(QBoxLayout.LeftToRight)
+        self.setLayout(self.box)
+        self.setTitle("현재 순위")
+
+        label = ["순위", "팀", "경기", "승", "무", "패", "승점"]
+        content = [soccerRanking.rank, soccerRanking.team, soccerRanking.games, soccerRanking.wins, soccerRanking.draws, soccerRanking.loses, soccerRanking.points]
+
+        for j in range(len(label)):
+            vbox = QVBoxLayout()
+            vbox.addWidget(QLabel(label[j]))
+            for i in range(len(soccerRanking.team_rank_list)):
+                vbox.addWidget(QLabel(str(content[j][i])))
+            self.box.addLayout(vbox)
+
+class BaseballRankingWidget(QGroupBox):
+    def __init__(self):
+        QGroupBox.__init__(self)
+        self.box = QBoxLayout(QBoxLayout.LeftToRight)
+        self.setLayout(self.box)
+        self.setTitle("현재 순위")
+
+        label = ["순위", "팀", "경기", "승", "무", "패", "승률"]
+        content = [baseballRanking.rank, baseballRanking.team, baseballRanking.games, baseballRanking.wins, baseballRanking.draws, baseballRanking.loses, baseballRanking.rate]
+
+        for j in range(len(label)):
+            vbox = QVBoxLayout()
+            vbox.addWidget(QLabel(label[j]))
+            for i in range(len(soccerRanking.team_rank_list)):
+                vbox.addWidget(QLabel(str(content[j][i])))
+            self.box.addLayout(vbox)
+
+class BasketballRankingWidget(QGroupBox):
+    def __init__(self):
+        QGroupBox.__init__(self)
+        self.box = QBoxLayout(QBoxLayout.LeftToRight)
+        self.setLayout(self.box)
+        self.setTitle("현재 순위")
+
+        label = ["순위", "팀", "경기", "승", "패", "승률"]
+        content = [basketballRanking.rank, basketballRanking.team, basketballRanking.games, basketballRanking.wins, basketballRanking.loses, basketballRanking.rate]
+
+        for j in range(len(label)):
+            vbox = QVBoxLayout()
+            vbox.addWidget(QLabel(label[j]))
+            for i in range(len(basketballRanking.team_rank_list)):
+                vbox.addWidget(QLabel(str(content[j][i])))
+            self.box.addLayout(vbox)
+
+class EmptyWidget(QGroupBox):
+    def __init__(self):
+        QGroupBox.__init__(self)

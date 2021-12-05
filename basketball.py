@@ -20,7 +20,7 @@ def goalWinRate(win, lose, win2, lose2, goalRate):
         goalRate = float(goalRate)
 
         goalRate /= 100
-        games = 82
+        games = 54
         countWin = 0
         currentGames = win + lose
         leaveGames = games - currentGames
@@ -52,8 +52,10 @@ def gamePointCalc(win, lose, win2, lose2, goal):
     try:
         if win2 == '' or lose2 == '':
             return "우리 팀과 상대 팀의 승, 패를 모두 입력해주세요."
-        elif int(win2) + int(lose2) > 144:
-            return "농구의 최대 경기 수는 82경기입니다."
+        elif int(win2) + int(lose2) > 54:
+            return "농구의 최대 경기 수는 54경기입니다."
+        if int(win2) < 0 or int(lose2) < 0 :
+            return "0 이상의 숫자를 입력해주세요."
 
         win = int(win)
         lose = int(lose)
